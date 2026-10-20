@@ -60,11 +60,11 @@ test('correct and wrong choices can be mixed until all weaknesses are found', ()
   assert.equal(round.choose('grass').status,'won');
   assert.equal(round.attemptsRemaining,2);
 });
-test('No 2x weaknesses is an explicit correct action', () => {
+test('No 2x or 4x action is ignored while an accepted weakness exists', () => {
   const round=new Round(['water','ground']);
-  assert.deepEqual(round.answers,[]);
-  assert.equal(round.chooseNone().status,'won');
-  assert.equal(round.choose('ice').status,'ended');
+  assert.deepEqual(round.answers,['grass']);
+  assert.equal(round.chooseNone().status,'ignored');
+  assert.equal(round.choose('grass').status,'won');
 });
 test('bundled Pokédex contains all supported valid species', () => {
   const species=JSON.parse(readFileSync(new URL('../pokemon.json',import.meta.url),'utf8'));
