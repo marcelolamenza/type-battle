@@ -47,6 +47,6 @@ test('attempts, hint progression, terminal win/loss, and reset are deterministic
 });
 test('the empty set is a valid completed answer when it is the exact answer', () => {
   assert.equal(exactSet([], []), true);
-  const noWeakness = new Round(['normal']);
-  assert.deepEqual(noWeakness.answers, ['fighting']);
+  const noWeakness = new Round(['water','ground']);
+  assert.deepEqual(noWeakness.answers, ['ice']);
 });
