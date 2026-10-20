@@ -9,7 +9,7 @@ test('pure Water has exactly Electric and Grass weaknesses', () => {
 });
 test('Water/Ground turns Grass into 4x, not an exact 2x answer', () => {
   const chart = effectiveness(['water','ground']);
-  assert.equal(chart.grass, 4); assert.notEqual(chart.grass, 2); assert.equal(chart.ice, 2);
+  assert.equal(chart.grass, 4); assert.notEqual(chart.grass, 2); assert.equal(chart.ice, 1);
 });
 test('immunities multiply to 0x', () => {
   assert.equal(effectiveness(['ground']).electric, 0);
@@ -48,5 +48,6 @@ test('attempts, hint progression, terminal win/loss, and reset are deterministic
 test('the empty set is a valid completed answer when it is the exact answer', () => {
   assert.equal(exactSet([], []), true);
   const noWeakness = new Round(['water','ground']);
-  assert.deepEqual(noWeakness.answers, ['ice']);
+  assert.deepEqual(noWeakness.answers, []);
+  assert.equal(noWeakness.submit([]).status, 'won');
 });
