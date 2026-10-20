@@ -103,6 +103,16 @@ test('all 18 locally bundled type icons map one-to-one and render accessibly', (
   assert.doesNotMatch(unknown, /assets\/type-icons/);
 });
 
+test('guess feedback and detailed results sit in the Pokémon card below its image and name', () => {
+  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  const battle=html.slice(html.indexOf('<section id="battlePanel">'),html.indexOf('</section>',html.indexOf('<section id="battlePanel">')));
+  assert.ok(battle.indexOf('id="sprite"') < battle.indexOf('id="name"'));
+  assert.ok(battle.indexOf('id="name"') < battle.indexOf('id="feedback"'));
+  assert.ok(battle.indexOf('id="feedback"') < battle.indexOf('id="result"'));
+  assert.match(html, /\.type-choice-icon\{[^}]*width:52px;height:52px/);
+  assert.match(html, /\.type-icon--normal\{width:44px;height:44px\}/);
+});
+
 test('embedded browser app script parses before deployment', () => {
   const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
   const start=html.indexOf('<script type="module">'); assert.notEqual(start,-1);
