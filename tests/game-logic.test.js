@@ -97,7 +97,8 @@ test('all 18 locally bundled type icons map one-to-one and render accessibly', (
   const accessible = typeIconMarkup('electric', { decorative: false });
   assert.match(accessible, /role="img" aria-label="Electric type"/);
   const unknown = typeIconMarkup('mystery', { decorative: false });
-  assert.match(unknown, /role="img" aria-label="Mystery type"/);\n  assert.match(unknown, /is-fallback/);
+  assert.match(unknown, /role="img" aria-label="Mystery type"/);
+  assert.match(unknown, /is-fallback/);
   assert.match(unknown, />\?<\/span>/);
   assert.doesNotMatch(unknown, /assets\/type-icons/);
 });
