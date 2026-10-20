@@ -112,6 +112,9 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.match(html, /\.type-choice-icon\{display:grid;place-items:center\}/);
   assert.doesNotMatch(html, /\.type-choice-icon\{[^}]*border-radius:50%/);
   assert.match(html, /target&&\(ended\|\|attempts<3\)\?target\.types\.slice\(0,ended\|\|attempts===1\?target\.types\.length:1\)/);
+  assert.match(html, /\.result-summary\{display:flex/);
+  assert.match(html, /round\.foundTypes\.map\(guessBadge\)/);
+  assert.match(html, /round\.missedTypes\.map\(guessBadge\)/);
 });
 
 test('embedded browser app script parses before deployment', () => {
