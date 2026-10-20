@@ -15,7 +15,7 @@ export function typeIconMarkup(type, { size = 'normal', decorative = true } = {}
   const accessible = decorative ? 'aria-hidden="true"' : 'role="img" aria-label="' + escapeHtml(label + ' type') + '"';
 
   if (!valid) {
-    return '<span class="type-icon type-icon--' + sizeClass + ' type-icon--fallback" ' + accessible + '><span class="type-icon-fallback" aria-hidden="true">?</span></span>';
+    return '<span class="type-icon type-icon--' + sizeClass + ' is-fallback" ' + accessible + '><span class="type-icon-fallback" aria-hidden="true">?</span></span>';
   }
 
   const src = new URL('./assets/type-icons/' + TYPE_ICON_FILES[key], import.meta.url).href;
