@@ -1,12 +1,12 @@
 # Type Battle
 
-A responsive Pokémon type-effectiveness guessing game. Identify the complete set of attacking types that deal exactly 2× damage to a selected Pokémon in at most three attempts.
+A responsive Pokémon type-effectiveness guessing game. Identify every attacking type that deals 2× or 4× damage to a selected Pokémon in at most three attempts.
 
 ## Rules and data
 
-A round starts with the Pokémon's name and official artwork only. A wrong first guess reveals one defensive type; a wrong second guess reveals all types; the third miss ends the round. Guesses are sets, so every exact 2× weakness must be selected. An explicit “No 2× weaknesses” action handles an empty answer. The results explain 4× weaknesses, 2× weaknesses, resistances, stacked resistances, and immunities.
+A round starts with the Pokémon's name and official artwork only. A wrong first guess reveals one defensive type; a wrong second guess reveals all types; the third miss ends the round. Guesses are sets, so every 2× and 4× weakness must be selected. An explicit “no 2× or 4× weaknesses” action handles an empty answer. The results explain 4× weaknesses, 2× weaknesses, resistances, stacked resistances, and immunities.
 
-The effectiveness chart in `game-logic.js` is the traditional modern main-series chart (Generation VI onward, including Fairy). It applies each attacking type's multiplier against each defender type and multiplies them; only a final result of exactly 2 qualifies. The game bundles names and defensive types for all 1,025 standard species (#1–1025) in `pokemon.json`; alternate forms are excluded. The catalog is loaded locally and no runtime API call is needed for names, types, or gameplay. Sprite artwork is served from the [PokéAPI sprites repository](https://github.com/PokeAPI/sprites), with a regular sprite fallback if official artwork fails. The bundled dataset is based on [cristobalmitchell/pokedex](https://github.com/cristobalmitchell/pokedex), data/pokemon_utf8.csv (1,025 National Pokédex entries).
+The effectiveness chart in `game-logic.js` is the traditional modern main-series chart (Generation VI onward, including Fairy). It applies each attacking type's multiplier against each defender type and multiplies them; final multipliers of 2 or 4 qualify as correct answers. The game bundles names and defensive types for all 1,025 standard species (#1–1025) in `pokemon.json`; alternate forms are excluded. The catalog is loaded locally and no runtime API call is needed for names, types, or gameplay. Sprite artwork is served from the [PokéAPI sprites repository](https://github.com/PokeAPI/sprites), with a regular sprite fallback if official artwork fails. The bundled dataset is based on [cristobalmitchell/pokedex](https://github.com/cristobalmitchell/pokedex), data/pokemon_utf8.csv (1,025 National Pokédex entries).
 
 ## Run locally
 
