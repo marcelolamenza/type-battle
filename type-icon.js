@@ -10,7 +10,7 @@ function escapeHtml(value) {
 export function typeIconMarkup(type, { size = 'normal', decorative = true } = {}) {
   const key = String(type ?? '').trim().toLowerCase();
   const valid = Object.hasOwn(TYPE_ICON_FILES, key);
-  const label = valid ? key.charAt(0).toUpperCase() + key.slice(1) : (key || 'Unknown');
+  const label = key ? key.charAt(0).toUpperCase() + key.slice(1) : 'Unknown';
   const sizeClass = VALID_SIZES.has(size) ? size : 'normal';
   const accessible = decorative ? 'aria-hidden="true"' : 'role="img" aria-label="' + escapeHtml(label + ' type') + '"';
 
