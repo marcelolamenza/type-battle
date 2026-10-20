@@ -2,6 +2,7 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { effectiveness, Round, TYPES } from '../game-logic.js';
+import { TYPE_ICON_FILES, typeIconMarkup } from '../type-icon.js';
 
 test('pure Water accepts its 2x weaknesses', () => {
   const chart=effectiveness(['water']);
@@ -74,11 +75,38 @@ test('bundled Pokédex contains all supported valid species', () => {
   assert.deepEqual(species.find(p=>p.id===25).types,['electric']);
   assert.deepEqual(species.find(p=>p.id===194).types,['water','ground']);
 });
+test('all 18 locally bundled type icons map one-to-one and render accessibly', () => {
+  assert.deepEqual(Object.keys(TYPE_ICON_FILES).sort(), [...TYPES].sort());
+  const sources = TYPES.map(type => typeIconMarkup(type, { size: 'normal' }));
+  const expectedUrls = TYPES.map(type => new URL('../assets/type-icons/' + type + '.svg', import.meta.url).href);
+  const svgSources = [];
+  assert.equal(new Set(expectedUrls).size, 18);
+  assert.equal(new Set(sources).size, 18);
+  for (const [index, type] of TYPES.entries()) {
+    const svg = readFileSync(new URL('../assets/type-icons/' + type + '.svg', import.meta.url), 'utf8');
+    assert.match(svg, /<svg[^>]+viewBox="0 0 30 30"/, type);
+    assert.match(svg, /<(path|polygon|circle|ellipse|rect)\b/, type);
+    svgSources.push(svg);
+    assert.ok(sources[index].includes(expectedUrls[index]), type + ' uses its own local icon');
+    assert.match(sources[index], /aria-hidden="true"/);
+    assert.doesNotMatch(sources[index], /🔥|💧|⚡|🍃|🥊|👻|🐉|✨/);
+  }
+  assert.equal(new Set(svgSources).size, 18, 'every type file contains a distinct SVG');
+  const pagesAsset = new URL('./assets/type-icons/fire.svg', new URL('https://example.test/type-battle/type-icon.js'));
+  assert.equal(pagesAsset.pathname, '/type-battle/assets/type-icons/fire.svg');
+  const accessible = typeIconMarkup('electric', { decorative: false });
+  assert.match(accessible, /role="img" aria-label="Electric type"/);
+  const unknown = typeIconMarkup('mystery', { decorative: false });
+  assert.match(unknown, /role="img" aria-label="Mystery type"/);
+  assert.match(unknown, />\?<\/span>/);
+  assert.doesNotMatch(unknown, /assets\/type-icons/);
+});
+
 test('embedded browser app script parses before deployment', () => {
   const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
   const start=html.indexOf('<script type="module">'); assert.notEqual(start,-1);
   const bodyStart=html.indexOf('>',start)+1,bodyEnd=html.indexOf('</script>',bodyStart); assert.notEqual(bodyEnd,-1);
   let source=html.slice(bodyStart,bodyEnd);
-  source=source.slice(source.indexOf(';')+1).replaceAll('import.meta.url',"'https://example.test/type-battle/'");
+  source=source.replace(/^import .*;\s*/gm,'').replaceAll('import.meta.url',"'https://example.test/type-battle/'");
   assert.doesNotThrow(()=>new Function(source));
 });

@@ -18,7 +18,7 @@ The GitHub Actions workflow deploys the static site on pushes to `main` and supp
 
 ## Sources and attribution
 
-Pokémon data and sprite resources are provided by [PokéAPI](https://pokeapi.co/) and [PokéAPI sprites](https://github.com/PokeAPI/sprites). Pokémon names and imagery are trademarks and property of their respective owners. This fan-made learning project is not affiliated with Nintendo, Game Freak, or The Pokémon Company.
+Pokémon data and sprite resources are provided by [PokéAPI](https://pokeapi.co/) and [PokéAPI sprites](https://github.com/PokeAPI/sprites). The 18 type-symbol SVGs are copied from the official Pokémon type-chart portal assets already used by [typeDex](https://github.com/marcelolamenza/typeDex/tree/main/public/type-icons); attribution is included in `assets/type-icons/README.md`. These are Pokémon type symbols, not original Type Battle artwork. Pokémon names and imagery are trademarks and property of their respective owners. This fan-made learning project is not affiliated with Nintendo, Game Freak, or The Pokémon Company.
 
 ## Limitations
 
