@@ -119,6 +119,7 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.ok(html.includes('.guess-review .guess-missed{display:flex;flex-direction:column'));
   assert.ok(html.includes('.guess-badge .type-icon--small{padding:0;border-radius:0;background:transparent;box-shadow:none}'));
   assert.ok(html.includes('.effectiveness-scroll{max-height:20rem;overflow-y:auto'));
+  assert.ok(html.includes('#result{width:100%}'));
   assert.ok(html.includes('class="effectiveness-scroll" role="region" aria-label="Type effectiveness breakdown" tabindex="0"'));
   assert.doesNotMatch(html, /choice-state|guess-right/);
   assert.ok(html.includes('.history-pokemon{width:30px;height:30px'));
