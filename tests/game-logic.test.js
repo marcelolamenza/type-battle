@@ -116,6 +116,11 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.match(html, /answers\.filter\(t=>!round\.foundTypes\.includes\(t\)\)\.map\(guessBadge\)/);
   assert.match(html, /result-new-round/);
   assert.doesNotMatch(html, /choice-state|guess-right/);
+  assert.ok(html.indexOf('id="random"') < html.indexOf('id="sprite"'));
+  assert.match(html, /\.history-item\{display:flex;align-items:center;flex-wrap:nowrap/);
+  assert.match(html, /map\(historyBadge\)/);
+  assert.ok(html.includes("function guessBadge(t)") && html.includes("label+'</span></span>"));
+  assert.doesNotMatch(html, /result-title|Nice try!/);
 });
 
 test('embedded browser app script parses before deployment', () => {
