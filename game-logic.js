@@ -9,15 +9,46 @@ export function effectiveness(defendingTypes) {
   if (!Array.isArray(defendingTypes) || defendingTypes.length < 1 || defendingTypes.length > 2 || defendingTypes.some(t => !TYPES.includes(t))) throw new TypeError('Expected one or two valid defensive types');
   return Object.fromEntries(TYPES.map(attack => [attack, defendingTypes.reduce((value, defense) => value * multiplier(attack, defense), 1)]));
 }
-export function exactSet(guess, answer) { return Array.isArray(guess) && Array.isArray(answer) && guess.length === answer.length && new Set(guess).size === guess.length && guess.every(type => answer.includes(type)); }
 export class Round {
-  constructor(defendingTypes) { this.defendingTypes = [...defendingTypes]; this.answers = TYPES.filter(type => effectiveness(this.defendingTypes)[type] === 2); this.attemptsRemaining = 3; this.status = 'active'; }
-  get revealedTypes() { if (this.attemptsRemaining === 2) return this.defendingTypes.slice(0, 1); if (this.attemptsRemaining === 1 || this.status !== 'active') return [...this.defendingTypes]; return []; }
-  submit(guess) {
-    if (this.status !== 'active') return {status:'ended', attemptsRemaining:this.attemptsRemaining, revealedTypes:this.revealedTypes};
+  constructor(defendingTypes) {
+    this.defendingTypes = [...defendingTypes];
+    this.answers = TYPES.filter(type => effectiveness(this.defendingTypes)[type] === 2);
+    this.foundTypes = [];
+    this.missedTypes = [];
+    this.attemptsRemaining = 3;
+    this.status = 'active';
+  }
+  get revealedTypes() {
+    if (this.attemptsRemaining === 2) return this.defendingTypes.slice(0, 1);
+    if (this.attemptsRemaining === 1 || this.status !== 'active') return [...this.defendingTypes];
+    return [];
+  }
+  snapshot(status) {
+    return {status, attemptsRemaining:this.attemptsRemaining, foundTypes:[...this.foundTypes], missedTypes:[...this.missedTypes], revealedTypes:this.revealedTypes};
+  }
+  choose(attackType) {
+    if (this.status !== 'active') return this.snapshot('ended');
+    if (!TYPES.includes(attackType) || this.foundTypes.includes(attackType) || this.missedTypes.includes(attackType)) return this.snapshot('ignored');
+    if (this.answers.includes(attackType)) {
+      this.foundTypes.push(attackType);
+      if (this.foundTypes.length === this.answers.length) {
+        this.status = 'won';
+        return this.snapshot('won');
+      }
+      return this.snapshot('correct');
+    }
+    this.missedTypes.push(attackType);
     this.attemptsRemaining--;
-    if (exactSet(guess, this.answers)) this.status = 'won';
-    else if (this.attemptsRemaining === 0) this.status = 'lost';
-    return {status:this.status, attemptsRemaining:this.attemptsRemaining, revealedTypes:this.revealedTypes};
+    if (this.attemptsRemaining === 0) {
+      this.status = 'lost';
+      return this.snapshot('lost');
+    }
+    return this.snapshot('incorrect');
+  }
+  chooseNone() {
+    if (this.status !== 'active') return this.snapshot('ended');
+    if (this.answers.length !== 0) return this.snapshot('ignored');
+    this.status = 'won';
+    return this.snapshot('won');
   }
 }
