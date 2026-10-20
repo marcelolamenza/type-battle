@@ -109,8 +109,9 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.ok(battle.indexOf('id="sprite"') < battle.indexOf('id="name"'));
   assert.ok(battle.indexOf('id="name"') < battle.indexOf('id="feedback"'));
   assert.ok(battle.indexOf('id="feedback"') < battle.indexOf('id="result"'));
-  assert.match(html, /\.type-choice-icon\{[^}]*width:52px;height:52px/);
-  assert.match(html, /\.type-icon--normal\{width:44px;height:44px\}/);
+  assert.match(html, /\.type-choice-icon\{display:grid;place-items:center\}/);
+  assert.doesNotMatch(html, /\.type-choice-icon\{[^}]*border-radius:50%/);
+  assert.match(html, /target&&\(ended\|\|attempts<3\)\?target\.types\.slice\(0,ended\|\|attempts===1\?target\.types\.length:1\)/);
 });
 
 test('embedded browser app script parses before deployment', () => {
