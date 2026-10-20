@@ -121,6 +121,17 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.ok(html.includes('.guess-review .guess-missed .types{display:grid'));
 });
 
+test('Nunito and Lilita One are centralized and applied to UI/display text', () => {
+  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(html, /fonts\.googleapis\.com\/css2\?family=Lilita\+One&family=Nunito/);
+  assert.match(html, /--font-ui:\"Nunito\"/);
+  assert.match(html, /--font-display:\"Lilita One\"/);
+  assert.match(html, /body\{[^}]*font-family:var\(--font-ui\)/);
+  assert.match(html, /h1\{font-family:var\(--font-display\)/);
+  assert.match(html, /\.brand>span:last-child\{font-family:var\(--font-display\)/);
+  assert.match(html, /--size-h1:clamp\(/);
+});
+
 test('embedded browser app script parses before deployment', () => {
   const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
   const start=html.indexOf('<script type="module">'); assert.notEqual(start,-1);
