@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { effectiveness, exactSet, Round, TYPES } from '../game-logic.js';
 
@@ -50,4 +51,13 @@ test('the empty set is a valid completed answer when it is the exact answer', ()
   const noWeakness = new Round(['water','ground']);
   assert.deepEqual(noWeakness.answers, []);
   assert.equal(noWeakness.submit([]).status, 'won');
+});
+
+test('bundled Pokédex has all 1,025 supported species with valid types', () => {
+  const species = JSON.parse(readFileSync(new URL('../pokemon.json', import.meta.url), 'utf8'));
+  assert.equal(species.length, 1025);
+  assert.deepEqual(species.map(p => p.id), Array.from({length:1025}, (_,i) => i + 1));
+  assert.ok(species.every(p => p.name && p.types.length >= 1 && p.types.length <= 2 && p.types.every(t => TYPES.includes(t))));
+  assert.deepEqual(species.find(p => p.id === 25).types, ['electric']);
+  assert.deepEqual(species.find(p => p.id === 194).types, ['water','ground']);
 });
