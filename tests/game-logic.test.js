@@ -1,7 +1,7 @@
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { effectiveness, Round, TYPES, HISTORY_STORAGE_KEY, readRoundHistory, saveRoundHistory, summarizeRoundHistory } from '../game-logic.js';
+import { effectiveness, Round, TYPES, HISTORY_STORAGE_KEY, readRoundHistory, saveRoundHistory, summarizeRoundHistory, clearRoundHistory } from '../game-logic.js';
 import { TYPE_ICON_FILES, typeIconMarkup } from '../type-icon.js';
 
 test('pure Water accepts its 2x weaknesses', () => {
@@ -120,6 +120,7 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.ok(html.includes('.guess-badge .type-icon--small{padding:0;border-radius:0;background:transparent;box-shadow:none}'));
   assert.ok(html.includes('.effectiveness-scroll{max-height:20rem;overflow-y:auto'));
   assert.ok(html.includes('#result{width:100%}'));
+  assert.match(html, /id="clearHistory" class="secondary"/);
   assert.ok(html.includes('class="effectiveness-scroll" role="region" aria-label="Type effectiveness breakdown" tabindex="0"'));
   assert.doesNotMatch(html, /choice-state|guess-right/);
   assert.ok(html.includes('.history-pokemon{width:30px;height:30px'));
@@ -148,7 +149,7 @@ test('embedded browser app script parses before deployment', () => {
 });
 
 test('browser history stores recent rounds and summarizes wins and losses', () => {
-  const values=new Map(); const storage={getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value)};
+  const values=new Map(); const storage={getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};
   assert.deepEqual(readRoundHistory(storage),[]);
   const win={pokemonName:'pikachu',outcome:'win',missesUsed:1,correctTypes:['ground'],missedTypes:['fire']};
   const loss={pokemonName:'bulbasaur',outcome:'loss',missesUsed:3,correctTypes:['fire'],missedTypes:['normal','ice','bug']};
@@ -156,6 +157,8 @@ test('browser history stores recent rounds and summarizes wins and losses', () =
   assert.equal(values.has(HISTORY_STORAGE_KEY),true);
   assert.deepEqual(readRoundHistory(storage),[loss,win]);
   assert.deepEqual(summarizeRoundHistory(saved),{battles:2,wins:1,losses:1});
+  assert.equal(clearRoundHistory(storage),true);
+  assert.deepEqual(readRoundHistory(storage),[]);
 });
 test('history storage safely handles browser storage failures', () => {
   const storage={getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}};

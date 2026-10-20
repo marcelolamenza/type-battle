@@ -66,3 +66,8 @@ export function saveRoundHistory(storage, record) {
 export function summarizeRoundHistory(history) {
   return history.reduce((n,r)=>{n.battles++;if(r.outcome==='win')n.wins++;else if(r.outcome==='loss')n.losses++;return n;},{battles:0,wins:0,losses:0});
 }
+
+export function clearRoundHistory(storage) {
+  try { storage.removeItem(HISTORY_STORAGE_KEY); return true; }
+  catch { return false; }
+}
