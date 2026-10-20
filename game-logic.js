@@ -12,7 +12,7 @@ export function effectiveness(defendingTypes) {
 export class Round {
   constructor(defendingTypes) {
     this.defendingTypes = [...defendingTypes];
-    this.answers = TYPES.filter(type => effectiveness(this.defendingTypes)[type] === 2);
+    this.answers = TYPES.filter(type => effectiveness(this.defendingTypes)[type] >= 2);
     this.foundTypes = [];
     this.missedTypes = [];
     this.attemptsRemaining = 3;
