@@ -1,7 +1,7 @@
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { effectiveness, Round, TYPES } from '../game-logic.js';
+import { effectiveness, Round, TYPES, HISTORY_STORAGE_KEY, readRoundHistory, saveRoundHistory, summarizeRoundHistory } from '../game-logic.js';
 import { TYPE_ICON_FILES, typeIconMarkup } from '../type-icon.js';
 
 test('pure Water accepts its 2x weaknesses', () => {
@@ -121,4 +121,20 @@ test('embedded browser app script parses before deployment', () => {
   let source=html.slice(bodyStart,bodyEnd);
   source=source.replace(/^import .*;\s*/gm,'').replaceAll('import.meta.url',"'https://example.test/type-battle/'");
   assert.doesNotThrow(()=>new Function(source));
+});
+
+test('browser history stores recent rounds and summarizes wins and losses', () => {
+  const values=new Map(); const storage={getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value)};
+  assert.deepEqual(readRoundHistory(storage),[]);
+  const win={pokemonName:'pikachu',outcome:'win',missesUsed:1,correctTypes:['ground'],missedTypes:['fire']};
+  const loss={pokemonName:'bulbasaur',outcome:'loss',missesUsed:3,correctTypes:['fire'],missedTypes:['normal','ice','bug']};
+  saveRoundHistory(storage,win); const saved=saveRoundHistory(storage,loss);
+  assert.equal(values.has(HISTORY_STORAGE_KEY),true);
+  assert.deepEqual(readRoundHistory(storage),[loss,win]);
+  assert.deepEqual(summarizeRoundHistory(saved),{battles:2,wins:1,losses:1});
+});
+test('history storage safely handles browser storage failures', () => {
+  const storage={getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}};
+  assert.deepEqual(readRoundHistory(storage),[]);
+  assert.deepEqual(saveRoundHistory(storage,{pokemonName:'pikachu',outcome:'win',missesUsed:0}),[]);
 });

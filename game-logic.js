@@ -52,3 +52,17 @@ export class Round {
     return this.snapshot('won');
   }
 }
+
+export const HISTORY_STORAGE_KEY = 'type-battle-round-history-v1';
+export const HISTORY_LIMIT = 30;
+export function readRoundHistory(storage) {
+  try { const parsed=JSON.parse(storage.getItem(HISTORY_STORAGE_KEY)||'[]'); return Array.isArray(parsed)?parsed.filter(r=>r&&typeof r.pokemonName==='string'&&(r.outcome==='win'||r.outcome==='loss')&&Number.isFinite(r.missesUsed)).slice(0,HISTORY_LIMIT):[]; }
+  catch { return []; }
+}
+export function saveRoundHistory(storage, record) {
+  const history=readRoundHistory(storage), next=[record,...history].slice(0,HISTORY_LIMIT);
+  try { storage.setItem(HISTORY_STORAGE_KEY,JSON.stringify(next)); return next; } catch { return history; }
+}
+export function summarizeRoundHistory(history) {
+  return history.reduce((n,r)=>{n.battles++;if(r.outcome==='win')n.wins++;else if(r.outcome==='loss')n.losses++;return n;},{battles:0,wins:0,losses:0});
+}
