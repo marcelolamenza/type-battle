@@ -61,3 +61,15 @@ test('bundled Pokédex has all 1,025 supported species with valid types', () => 
   assert.deepEqual(species.find(p => p.id === 25).types, ['electric']);
   assert.deepEqual(species.find(p => p.id === 194).types, ['water','ground']);
 });
+
+test('embedded browser app script parses before deployment', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const start = html.indexOf('<script type="module">');
+  assert.notEqual(start, -1);
+  const bodyStart = html.indexOf('>', start) + 1;
+  const bodyEnd = html.indexOf('</script>', bodyStart);
+  assert.notEqual(bodyEnd, -1);
+  let source = html.slice(bodyStart, bodyEnd);
+  source = source.slice(source.indexOf(';') + 1).replaceAll('import.meta.url', "'https://example.test/type-battle/'");
+  assert.doesNotThrow(() => new Function(source));
+});
