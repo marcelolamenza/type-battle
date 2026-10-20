@@ -73,3 +73,12 @@ test('embedded browser app script parses before deployment', () => {
   source = source.slice(source.indexOf(';') + 1).replaceAll('import.meta.url', "'https://example.test/type-battle/'");
   assert.doesNotThrow(() => new Function(source));
 });
+
+test('Fire is a 2x attack against Grass and is included in the complete answer', () => {
+  const chart = effectiveness(['grass']);
+  assert.equal(chart.fire, 2);
+  const round = new Round(['grass']);
+  assert.deepEqual([...round.answers].sort(), ['bug','fire','flying','ice','poison']);
+  assert.equal(round.submit(['fire']).status, 'active');
+  assert.equal(new Round(['grass']).submit(['fire','ice','poison','flying','bug']).status, 'won');
+});
