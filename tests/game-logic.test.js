@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { effectiveness, Round, TYPES } from '../game-logic.js';
 
-test('pure Water has exactly Electric and Grass weaknesses', () => {
+test('pure Water accepts its 2x weaknesses', () => {
   const chart=effectiveness(['water']);
   assert.equal(chart.electric,2); assert.equal(chart.grass,2);
   assert.deepEqual(TYPES.filter(t=>chart[t]===2).sort(),['electric','grass']);
@@ -18,16 +18,19 @@ test('Fire is a 2x move against Grass and is immediately marked correct', () => 
   assert.ok(result.foundTypes.includes('fire'));
   assert.equal(result.attemptsRemaining,3);
 });
-test('player wins after clicking every exact 2x weakness one by one', () => {
+test('player wins after clicking every 2x or 4x weakness one by one', () => {
   const round=new Round(['grass']);
   for(const type of ['fire','ice','poison','flying']) assert.equal(round.choose(type).status,'correct');
   assert.equal(round.choose('bug').status,'won');
   assert.equal(round.attemptsRemaining,3);
 });
-test('Water/Ground multiplies Grass to 4x, not 2x', () => {
+test('Water/Ground Grass 4x is accepted as a correct answer', () => {
   const chart=effectiveness(['water','ground']);
-  assert.equal(chart.grass,4); assert.notEqual(chart.grass,2);
+  assert.equal(chart.grass,4);
   assert.equal(chart.ice,1);
+  const round=new Round(['water','ground']);
+  assert.ok(round.answers.includes('grass'));
+  assert.equal(round.choose('grass').status,'won');
 });
 test('immunities and resistances multiply correctly', () => {
   assert.equal(effectiveness(['ground']).electric,0);
