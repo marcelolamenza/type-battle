@@ -114,7 +114,10 @@ test('guess feedback and detailed results sit in the Pokémon card below its ima
   assert.match(html, /target&&\(ended\|\|attempts<3\)\?target\.types\.slice\(0,ended\|\|attempts===1\?target\.types\.length:1\)/);
   assert.match(html, /\.result-summary\{display:flex/);
   assert.match(html, /answers\.filter\(t=>!round\.foundTypes\.includes\(t\)\)\.map\(guessBadge\)/);
-  assert.match(html, /result-new-round/);
+  assert.match(html, /id="random" class="primary battle-random"/);
+  assert.doesNotMatch(html, /result-new-round/);
+  assert.ok(html.includes('.guess-review .guess-missed{display:flex;flex-direction:column'));
+  assert.ok(html.includes('.guess-badge .type-icon--small{padding:0;border-radius:0;background:transparent;box-shadow:none}'));
   assert.doesNotMatch(html, /choice-state|guess-right/);
   assert.ok(html.includes('.history-pokemon{width:30px;height:30px'));
   assert.match(html, /dateStyle:'medium',timeStyle:'short'/);
